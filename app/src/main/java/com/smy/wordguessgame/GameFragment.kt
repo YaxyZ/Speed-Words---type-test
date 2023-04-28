@@ -1,11 +1,13 @@
 package com.smy.wordguessgame
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
@@ -25,10 +27,13 @@ class GameFragment : Fragment() {
 
     private lateinit var gameViewModel : GameViewModel
 
+    private var dialogs = mutableListOf<AlertDialog>()
+
     private lateinit var timer: CustomCountDownTimer
 
     private val timerInterval = 1000L // 1 second
     private val timerDuration = 60000L // 60 seconds
+    private var timeLeft = 0L
 
 
     override fun onCreateView(
@@ -41,6 +46,9 @@ class GameFragment : Fragment() {
         //        val strikeList = listOf(findViewById<TextView>(R.id.strike1),
 //                                            findViewById(R.id.strike2),
 //                                            findViewById(R.id.strike3))
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            onPause()
+        }
 
         gameViewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
@@ -56,19 +64,8 @@ class GameFragment : Fragment() {
             scoreTextView.text = it.toString()
         }
 
-        timer = CustomCountDownTimer(requireContext(),
-            object : TimerListener {
-                override fun onTimerTick(milis: Long) {
-                    timerTextView.text = (milis/1000).toString()
-                }
+        setTimer(timerDuration)
 
-                override fun onTimerFinish() {
-                    showEndingDialog(timer)
-                }
-            },
-            timerDuration,timerInterval
-        )
-        timer.start()
 
         gameViewModel.getWord()
 
@@ -81,6 +78,22 @@ class GameFragment : Fragment() {
         }
         return view
     }
+
+    override fun onPause() {
+        timeLeft = timer.timeLeft
+        timer.cancel()
+        showPauseDialog()
+        super.onPause()
+    }
+
+
+    override fun onDestroyView() {
+        timer.cancel()
+        for(dialog in dialogs)
+            if(dialog.isShowing) dialog.dismiss()
+        super.onDestroyView()
+    }
+
 
     private fun showEndingDialog(timer:CustomCountDownTimer){
         val alertDialog: AlertDialog = this.let {
@@ -106,7 +119,50 @@ class GameFragment : Fragment() {
             // Create the AlertDialog
             builder.create()
         }
+        dialogs.add(alertDialog)
         alertDialog.show()
+    }
+
+    private fun showPauseDialog(){
+        val alertDialog: AlertDialog = this.let {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.apply {
+                setPositiveButton("Continue"
+                ) { dialog, id ->
+                    Log.d("appTT",timeLeft.toString())
+                    setTimer(timeLeft)
+                }
+                setNegativeButton("Main Menu"
+                ) { dialog, id ->
+                    val action = GameFragmentDirections.actionGameFragmentToHomeFragment()
+                    findNavController().navigate(action)
+                }
+                setMessage("Awesome you did ${gameViewModel.score.value} WPM!")
+                setTitle("Game Over")
+                setCancelable(false)
+            }
+
+            // Create the AlertDialog
+            builder.create()
+        }
+        dialogs.add(alertDialog)
+        alertDialog.show()
+    }
+
+    private fun setTimer(duration:Long,interval:Long = timerInterval) {
+         timer = CustomCountDownTimer(requireContext(),
+            object : TimerListener {
+                override fun onTimerTick(milis: Long) {
+                    timerTextView.text = (milis/1000).toString()
+                }
+
+                override fun onTimerFinish() {
+                    showEndingDialog(timer)
+                }
+            },
+            duration,interval
+        )
+        timer.start()
     }
 
 

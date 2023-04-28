@@ -15,6 +15,8 @@ class GameViewModel : ViewModel() {
 
     val removedWordList = mutableListOf<String>()
 
+
+
     init {
         score.value = 0
     }
@@ -63,6 +65,10 @@ class GameViewModel : ViewModel() {
         score.value = 0
         word_list.addAll(removedWordList)
         getWord()
+    }
+
+    fun pauseGame(){
+
     }
 
     private fun checkNextWordExists() : Boolean {

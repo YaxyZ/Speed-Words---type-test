@@ -9,11 +9,14 @@ class CustomCountDownTimer(
     millisInFuture: Long,
     countDownInterval: Long) : CountDownTimer(millisInFuture, countDownInterval) {
 
+    var timeLeft = millisInFuture
     override fun onTick(millisUntilFinished: Long) {
+        timeLeft = millisUntilFinished
         listener.onTimerTick(millisUntilFinished)
     }
 
     override fun onFinish() {
         listener.onTimerFinish()
     }
+
 }
