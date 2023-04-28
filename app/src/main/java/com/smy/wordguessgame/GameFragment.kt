@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.smy.wordguessgame.timer.CustomCountDownTimer
 import com.smy.wordguessgame.timer.TimerListener
@@ -91,9 +93,10 @@ class GameFragment : Fragment() {
                     timer.start()
                     dialog.dismiss()
                 }
-                setNegativeButton("Quit"
+                setNegativeButton("Main Menu"
                 ) { dialog, id ->
-                    requireActivity().finish()
+                    val action = GameFragmentDirections.actionGameFragmentToHomeFragment()
+                    findNavController().navigate(action)
                 }
                 setMessage("Awesome you did ${gameViewModel.score.value} WPM!")
                 setTitle("Game Over")
