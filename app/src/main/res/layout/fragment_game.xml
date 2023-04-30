@@ -4,33 +4,38 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
+android:background="@drawable/stroke_background4dp"
+android:layout_margin="20dp"
 tools:context=".GameFragment">
 
-<com.google.android.material.textview.MaterialTextView
-    android:id="@+id/timerTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="60:00"
-    android:textSize="38sp"
-    app:layout_constraintBottom_toTopOf="@+id/gameScoreTextView"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.5" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/timerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="23"
+        android:textSize="42sp"
+        app:fontFamily="monospace"
+        app:layout_constraintBottom_toTopOf="@+id/wordTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
 
 
-<com.google.android.material.textview.MaterialTextView
-    android:id="@+id/gameScoreTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="0"
-    android:textSize="38sp"
-    app:layout_constraintBottom_toTopOf="@+id/wordTextView"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/timerTextView"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.5" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/gameScoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="38sp"
+        android:visibility="gone"
+        app:fontFamily="monospace"
+        app:layout_constraintBottom_toTopOf="@+id/wordTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timerTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
 
 <com.google.android.material.textview.MaterialTextView
     android:id="@+id/wordTextView"

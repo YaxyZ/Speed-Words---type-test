@@ -3,6 +3,9 @@
     <style name="Base.Theme.WordGuessGame" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:fontFamily">@font/rod</item>
+        <item name="fontFamily">@font/rod</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="Theme.WordGuessGame" parent="Base.Theme.WordGuessGame" />

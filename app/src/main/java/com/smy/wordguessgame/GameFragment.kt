@@ -1,5 +1,6 @@
 package com.smy.wordguessgame
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -124,28 +125,8 @@ class GameFragment : Fragment() {
     }
 
     private fun showPauseDialog(){
-        val alertDialog: AlertDialog = this.let {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.apply {
-                setPositiveButton("Continue"
-                ) { dialog, id ->
-                    Log.d("appTT",timeLeft.toString())
-                    setTimer(timeLeft)
-                }
-                setNegativeButton("Main Menu"
-                ) { dialog, id ->
-                    val action = GameFragmentDirections.actionGameFragmentToHomeFragment()
-                    findNavController().navigate(action)
-                }
-                setMessage("Awesome you did ${gameViewModel.score.value} WPM!")
-                setTitle("Game Over")
-                setCancelable(false)
-            }
-
-            // Create the AlertDialog
-            builder.create()
-        }
-        dialogs.add(alertDialog)
+        val dialog: Dialog = Dialog(requireContext())
+        dialogs.add(dialog)
         alertDialog.show()
     }
 
