@@ -30,7 +30,7 @@ class GameFragment : Fragment() {
 
     private lateinit var gameViewModel : GameViewModel
 
-    private var dialogs = mutableListOf<AlertDialog>()
+    private var dialogs = mutableListOf<Dialog>()
 
     private lateinit var timer: CustomCountDownTimer
 
@@ -105,31 +105,33 @@ class GameFragment : Fragment() {
 
 
     private fun showEndingDialog(timer:CustomCountDownTimer){
-        val alertDialog: AlertDialog = this.let {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.apply {
-                setPositiveButton("Try Again"
-                ) { dialog, id ->
-                    gameViewModel.resetGame()
-                    timer.cancel()
-                    timer.start()
-                    dialog.dismiss()
-                }
-                setNegativeButton("Main Menu"
-                ) { dialog, id ->
-                    val action = GameFragmentDirections.actionGameFragmentToHomeFragment()
-                    findNavController().navigate(action)
-                }
-                setMessage("Awesome you did ${gameViewModel.score.value} WPM!")
-                setTitle("Game Over")
-                setCancelable(false)
-            }
+        val dialog: Dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.dialog_ending)
+        dialog.setCancelable(false)
 
-            // Create the AlertDialog
-            builder.create()
+        val tryAgainButton:Button = dialog.findViewById(R.id.endTryAgainButton)
+        val settingsButton:Button = dialog.findViewById(R.id.pauseSettingsButton)
+        val mainMenuButton:Button = dialog.findViewById(R.id.pauseMainMenuButton)
+        dialog.findViewById<TextView>(R.id.endTypingResult).text = "${gameViewModel.score.value} WPM"
+
+        tryAgainButton.setOnClickListener{
+            gameViewModel.resetGame()
+            timer.cancel()
+            timer.start()
+            dialog.dismiss()
         }
-        dialogs.add(alertDialog)
-        alertDialog.show()
+
+        settingsButton.setOnClickListener { dialog.dismiss() }
+
+        mainMenuButton.setOnClickListener {
+            val action = GameFragmentDirections.actionGameFragmentToHomeFragment()
+            findNavController().navigate(action)
+            dialog.dismiss()
+        }
+        dialogs.add(dialog)
+        dialog.show()
+
+
     }
 
     private fun showPauseDialog(){
@@ -153,7 +155,7 @@ class GameFragment : Fragment() {
             findNavController().navigate(action)
             dialog.dismiss()
         }
-//        dialogs.add(dialog) TODO TURN THIS ON TO FIX BUGS
+        dialogs.add(dialog)
         dialog.show()
     }
 
