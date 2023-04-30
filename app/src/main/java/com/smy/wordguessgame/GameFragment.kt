@@ -49,7 +49,7 @@ class GameFragment : Fragment() {
         //        val strikeList = listOf(findViewById<TextView>(R.id.strike1),
 //                                            findViewById(R.id.strike2),
 //                                            findViewById(R.id.strike3))
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             onPause()
         }
 
@@ -105,7 +105,7 @@ class GameFragment : Fragment() {
 
 
     private fun showEndingDialog(timer:CustomCountDownTimer){
-        val dialog: Dialog = Dialog(requireContext())
+        val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.dialog_ending)
         dialog.setCancelable(false)
 
@@ -121,7 +121,11 @@ class GameFragment : Fragment() {
             dialog.dismiss()
         }
 
-        settingsButton.setOnClickListener { dialog.dismiss() }
+        settingsButton.setOnClickListener {
+            val action = GameFragmentDirections.actionGameFragmentToSettingsFragment2()
+            findNavController().navigate(action)
+            dialog.dismiss()
+        }
 
         mainMenuButton.setOnClickListener {
             val action = GameFragmentDirections.actionGameFragmentToHomeFragment()
@@ -135,7 +139,7 @@ class GameFragment : Fragment() {
     }
 
     private fun showPauseDialog(){
-        val dialog: Dialog = Dialog(requireContext())
+        val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.dialog_pause)
         dialog.setCancelable(false)
 
@@ -148,7 +152,10 @@ class GameFragment : Fragment() {
             dialog.dismiss()
         }
 
-        settingsButton.setOnClickListener { dialog.dismiss() }
+        settingsButton.setOnClickListener {
+            val action = GameFragmentDirections.actionGameFragmentToSettingsFragment2()
+            findNavController().navigate(action)
+            dialog.dismiss() }
 
         mainMenuButton.setOnClickListener {
             val action = GameFragmentDirections.actionGameFragmentToHomeFragment()
