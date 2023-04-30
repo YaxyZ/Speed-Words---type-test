@@ -2,11 +2,12 @@ package com.smy.wordguessgame
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
@@ -25,6 +26,7 @@ class GameFragment : Fragment() {
     private lateinit var wordTextView: TextView
     private lateinit var timerTextView: TextView
     private lateinit var textInput : TextInputEditText
+    private lateinit var pauseButton : ImageView
 
     private lateinit var gameViewModel : GameViewModel
 
@@ -58,6 +60,10 @@ class GameFragment : Fragment() {
         timerTextView = view.findViewById(R.id.timerTextView)
         textInput = view.findViewById(R.id.textInput)
 
+        pauseButton = view.findViewById(R.id.gamePauseButton)
+
+
+
         gameViewModel.currentWord.observe(viewLifecycleOwner) {
             wordTextView.text = it.toString()
         }
@@ -67,7 +73,9 @@ class GameFragment : Fragment() {
 
         setTimer(timerDuration)
 
-
+        pauseButton.setOnClickListener {
+            showPauseDialog()
+        }
         gameViewModel.getWord()
 
         textInput.doAfterTextChanged {
@@ -126,8 +134,27 @@ class GameFragment : Fragment() {
 
     private fun showPauseDialog(){
         val dialog: Dialog = Dialog(requireContext())
-        dialogs.add(dialog)
-        alertDialog.show()
+        dialog.setContentView(R.layout.dialog_pause)
+        dialog.setCancelable(false)
+
+        val continueButton:Button = dialog.findViewById(R.id.pauseContinueButton)
+        val settingsButton:Button = dialog.findViewById(R.id.pauseSettingsButton)
+        val mainMenuButton:Button = dialog.findViewById(R.id.pauseMainMenuButton)
+
+        continueButton.setOnClickListener{
+            setTimer(timeLeft)
+            dialog.dismiss()
+        }
+
+        settingsButton.setOnClickListener { dialog.dismiss() }
+
+        mainMenuButton.setOnClickListener {
+            val action = GameFragmentDirections.actionGameFragmentToHomeFragment()
+            findNavController().navigate(action)
+            dialog.dismiss()
+        }
+//        dialogs.add(dialog) TODO TURN THIS ON TO FIX BUGS
+        dialog.show()
     }
 
     private fun setTimer(duration:Long,interval:Long = timerInterval) {
@@ -146,5 +173,5 @@ class GameFragment : Fragment() {
         timer.start()
     }
 
+    }
 
-}

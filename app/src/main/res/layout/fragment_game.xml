@@ -8,6 +8,21 @@ android:background="@drawable/stroke_background4dp"
 android:layout_margin="20dp"
 tools:context=".GameFragment">
 
+    <ImageView
+        android:id="@+id/gamePauseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/pausebutton"
+        app:layout_constraintBottom_toTopOf="@+id/timerTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.050000012"
+        android:contentDescription="TODO" />
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/timerTextView"
         android:layout_width="wrap_content"
