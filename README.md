@@ -4,9 +4,9 @@ In addition I used and learnt:
 
 -ViewModel</br>
 -LiveData</br>
--Kotlin CountDownTimer library__
--Navigation Component__
--Android Backstack__
--Fragment lifecycle
+-Kotlin CountDownTimer library</br>
+-Navigation Component</br>
+-Android Backstack</br>
+-Fragment lifecycle</br>
 
 For the design I used adobe xd 
