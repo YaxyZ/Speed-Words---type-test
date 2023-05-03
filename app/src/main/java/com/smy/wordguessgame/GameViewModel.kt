@@ -1,5 +1,6 @@
 package com.smy.wordguessgame
 
+import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
@@ -12,6 +13,7 @@ class GameViewModel : ViewModel() {
     val score : MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
+    val bundleFromFragmentBToFragmentA = MutableLiveData<Bundle>()
 
     val removedWordList = mutableListOf<String>()
 
@@ -45,9 +47,10 @@ class GameViewModel : ViewModel() {
         "lxiv","lxix", "lxvi","lynx","lyre","mace","made","mage","magi","maid"
     )
 
-    fun getWord(){
+    fun getWord() : String{
         val randomWord = word_list.random()
         currentWord.value = randomWord
+        return randomWord
     }
 
     fun checkWord(answer:String) : Boolean{
@@ -67,9 +70,6 @@ class GameViewModel : ViewModel() {
         getWord()
     }
 
-    fun pauseGame(){
-
-    }
 
     private fun checkNextWordExists() : Boolean {
         if(word_list.lastIndex == -1)

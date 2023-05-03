@@ -2,6 +2,7 @@ package com.smy.wordguessgame
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +11,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.addCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.smy.wordguessgame.timer.CustomCountDownTimer
@@ -35,15 +36,34 @@ class GameFragment : Fragment() {
     private lateinit var timer: CustomCountDownTimer
 
     private val timerInterval = 1000L // 1 second
-    private val timerDuration = 60000L // 60 seconds
+    private var timerDuration = 60000L // 60 seconds
     private var timeLeft = 0L
 
+    val WORD_TAG = "SavedWord"
+    val TIMER_TAG = "SavedTimer"
 
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        gameViewModel = ViewModelProvider(this)[GameViewModel::class.java]
+
+        if(savedInstanceState != null ){
+            gameViewModel.currentWord.value = savedInstanceState.getString(WORD_TAG)
+            timeLeft = savedInstanceState.getLong(TIMER_TAG)
+        }
+        else{
+            timeLeft = timerDuration
+            gameViewModel.getWord()
+        }
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_game, container, false)
 
         //        val strikeList = listOf(findViewById<TextView>(R.id.strike1),
@@ -53,7 +73,6 @@ class GameFragment : Fragment() {
             onPause()
         }
 
-        gameViewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
         scoreTextView = view.findViewById(R.id.gameScoreTextView)
         wordTextView = view.findViewById(R.id.wordTextView)
@@ -62,7 +81,8 @@ class GameFragment : Fragment() {
 
         pauseButton = view.findViewById(R.id.gamePauseButton)
 
-
+        setTimer(timeLeft)
+        Log.d("appTest","$timerDuration")
 
         gameViewModel.currentWord.observe(viewLifecycleOwner) {
             wordTextView.text = it.toString()
@@ -71,21 +91,24 @@ class GameFragment : Fragment() {
             scoreTextView.text = it.toString()
         }
 
-        setTimer(timerDuration)
-
         pauseButton.setOnClickListener {
-            showPauseDialog()
+            onPause()
         }
-        gameViewModel.getWord()
 
         textInput.doAfterTextChanged {
             if (gameViewModel.checkWord(textInput.text.toString())) {
 //                if (!gameViewModel.checkNextWordExists()) //change this later to death dialog
                 textInput.text?.clear()
             }
-
         }
+
         return view
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(WORD_TAG,gameViewModel.currentWord.value)
+        outState.putLong(TIMER_TAG,timeLeft)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
@@ -122,7 +145,7 @@ class GameFragment : Fragment() {
         }
 
         settingsButton.setOnClickListener {
-            val action = GameFragmentDirections.actionGameFragmentToSettingsFragment2()
+            val action = GameFragmentDirections.actionGlobalSettingsFragment()
             findNavController().navigate(action)
             dialog.dismiss()
         }
@@ -153,7 +176,7 @@ class GameFragment : Fragment() {
         }
 
         settingsButton.setOnClickListener {
-            val action = GameFragmentDirections.actionGameFragmentToSettingsFragment2()
+            val action = GameFragmentDirections.actionGlobalSettingsFragment()
             findNavController().navigate(action)
             dialog.dismiss() }
 
@@ -171,6 +194,7 @@ class GameFragment : Fragment() {
             object : TimerListener {
                 override fun onTimerTick(milis: Long) {
                     timerTextView.text = (milis/1000).toString()
+                    Log.d("appT" ,(milis/1000).toString())
                 }
 
                 override fun onTimerFinish() {
